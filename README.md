@@ -16,15 +16,29 @@ The system runs locally on localhost, uses an **LLM for structured planning**, i
 
 ### Steps
 
-1. Clone the repository:
 ```bash
+Step 1. Clone the repository:
 git clone  https://github.com/JJuhi/ai-ops-assistant.git
 cd ai_ops_assistant
-python -m venv venv(optional)
+
+Step 2. (Optional) Create and activate a virtual environment:
+python -m venv venv
+venv\Scripts\activate
+
+Step 2. Install required dependencies:
 pip install -r requirements.txt
+
+Step 3. Create environment variables file:
 cp .env.example .env
+
+Step 4. Add your API keys inside .env.
+
+Step 5. Run the application locally:
 python -m uvicorn main:app
-After starting the server, open the following URL in your browser: http://127.0.0.1:8000/docs
+
+Step 6. After starting the server, open the following URL in your browser:
+http://127.0.0.1:8000/docs
+
 
 ###Example Prompts to Test the System
 
