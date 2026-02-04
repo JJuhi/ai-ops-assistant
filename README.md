@@ -10,16 +10,17 @@ The system runs locally on localhost, uses an **LLM for structured planning**, i
 ## Setup Instructions (Run Locally)
 
 ### Prerequisites
-- Python 3.9 or higher
+- Python 3.10 or above
 - Git
-- OpenAI API key
-- OpenWeather API key
+- Internet connection (for API calls)
 
-### Steps to take
+### Steps
 
+1. Clone the repository:
 ```bash
-git clone <your-github-repository-url>
+git clone  https://github.com/JJuhi/ai-ops-assistant.git
 cd ai_ops_assistant
+python -m venv venv(optional)
 pip install -r requirements.txt
 cp .env.example .env
 python -m uvicorn main:app
@@ -32,58 +33,91 @@ Use the /run endpoint with a JSON body:
   "task": "Find trending Python GitHub repositories and weather in Bangalore"
 }
 
-Additional example prompts:-
-- Find popular Python GitHub repositories and weather in Delhi
-- Show trending open-source Python projects and weather in Mumbai
-- Get top Python repositories and current weather in Chennai
-- List popular GitHub Python repositories and Bangalore weather
+## Additional Example Prompts
+1. Find trending Python GitHub repositories and weather in Bangalore
+2. Show top JavaScript GitHub repositories and weather in London
+3. Get popular AI repositories and current weather in New York
+4. Find trending backend projects and weather in Berlin
+5. List top open-source tools and weather in Tokyo
 
 
-###Environment Variables (.env.example)
-Create a .env file using .env.example and provide the following values:
-- OPENAI_API_KEY=your_openai_api_key
-- OPENWEATHER_API_KEY=your_openweather_api_key
+---
 
+# ✅ SECTION 3: ENVIRONMENT VARIABLES (`.env.example`)
+
+```md
+## Environment Variables
+
+Create a `.env` file based on `.env.example`.
+
+Example `.env.example`:
+```env
+OPENAI_KEY=your_openai_key_here
+OPENWEATHER_KEY=your_openweather_key_here
+
+---
+
+# ✅ SECTION 4: ARCHITECTURE EXPLANATION (AGENTS + TOOLS)
+
+```md
 ## Architecture Explanation (Agents + Tools)
 
-The system follows a **multi-agent architecture** where each agent has a clear and isolated responsibility. This design improves modularity, reliability, and ease of evaluation.
+The system follows a modular multi-agent architecture where each agent has a well-defined responsibility.
 
 ### Agents
 
 **Planner Agent**
-- Converts the user’s natural language task into a structured JSON execution plan
-- Uses an LLM to reason about required steps and tool selection
-- Ensures output follows a strict schema
-- Gracefully falls back to a deterministic plan if LLM access or quota is unavailable
+- Converts the user task into a structured execution plan
+- Uses an LLM to decide which tools are required
+- Outputs a strict JSON plan
 
 **Executor Agent**
-- Executes each step defined in the plan
-- Calls the appropriate tools and third-party APIs
-- Collects raw results from external services
+- Executes each step in the plan
+- Calls external tools and APIs
+- Aggregates intermediate results
 
 **Verifier Agent**
-- Validates the executor’s results for completeness
-- Formats a clean, user-friendly final response
-- Deterministic and quota-safe to ensure reliable end-to-end execution
+- Validates executor output
+- Formats a clean final response
+- Ensures completeness and consistency
 
 ### Tools
 
 **GitHub Tool**
-- Integrates with the GitHub Search API
-- Fetches popular repositories based on stars and query parameters
+- Uses GitHub Search API
+- Fetches popular repositories based on topic and stars
 
 **Weather Tool**
-- Integrates with the OpenWeather API
-- Fetches live weather data for a given city
+- Uses OpenWeather API
+- Fetches real-time weather data for a given city
 
-###Integrated APIs
+## Integrated APIs
 
-- GitHub Search API
-- OpenWeather API
-All APIs are real and live. No mocked data or hard-coded responses are used.
+The project integrates the following real third-party APIs:
 
-###Limitations / Tradeoffs
+1. OpenAI API  
+   - Used by the Planner agent for task decomposition and planning
 
-- LLM usage is limited to the planning phase; the system degrades gracefully when LLM access or quota is unavailable.
-- API response caching is in-memory and resets when the application restarts.
-- The system is optimized for small task graphs and single-node execution.
+2. GitHub Search API  
+   - Used to fetch trending repositories
+
+3. OpenWeather API  
+   - Used to retrieve live weather data
+
+## Known Limitations / Trade-offs
+
+- LLM usage depends on API quota availability
+- Planner fallback uses deterministic logic when quota is exceeded
+- External API rate limits may affect response time
+- No persistent database is used (stateless design)
+- Designed for clarity and evaluation rather than production scale
+
+## Evaluation Notes
+
+- The project runs locally with a single command
+- No responses are hardcoded
+- All outputs are generated dynamically
+- Multi-agent design is clearly separated
+- External APIs are used in real time
+
+
